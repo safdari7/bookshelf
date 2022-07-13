@@ -1,9 +1,79 @@
-// 🐨 you'll need to import react and createRoot from react-dom up here
+import React from 'react'
+import {createRoot} from 'react-dom/client'
+import {Logo} from 'components/logo'
+import {Dialog} from '@reach/dialog'
+import '@reach/dialog/styles.css'
 
-// 🐨 you'll also need to import the Logo component from './components/logo'
+function LoginForm({onSubmit, buttonText}) {
+  function submitHandler(event) {
+    event.preventDefault()
+    const {username, password} = event.target.elements
+    onSubmit({
+      username: username.value,
+      password: password.value,
+    })
+  }
 
-// 🐨 create an App component here and render the logo, the title ("Bookshelf"), a login button, and a register button.
-// 🐨 for fun, you can add event handlers for both buttons to alert that the button was clicked
+  return (
+    <form onSubmit={submitHandler}>
+      <div>
+        <label htmlFor="username">Username</label>
+        <input id="username" />
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <input id="password" type="password" />
+      </div>
+      <button type="submit">{buttonText}</button>
+    </form>
+  )
+}
 
-// 🐨 use createRoot to render the <App /> to the root element
-// 💰 find the root element with: document.getElementById('root')
+function App() {
+  const [openDialog, setOpenDialog] = React.useState('none')
+
+  function login(formData) {
+    console.log(formData)
+  }
+
+  function register(formData) {
+    console.log(formData)
+  }
+  return (
+    <>
+      <Dialog
+        aria-label="Login form"
+        isOpen={openDialog === 'login'}
+        onDismiss={() => setOpenDialog('none')}
+      >
+        <button className="close-button" onClick={() => setOpenDialog('none')}>
+          <span aria-hidden>Close</span>
+        </button>
+        <h3>Login</h3>
+        <LoginForm onSubmit={login} buttonText="Login" />
+      </Dialog>
+      <Dialog
+        aria-label="Login form"
+        isOpen={openDialog === 'register'}
+        onDismiss={() => setOpenDialog('none')}
+      >
+        <button className="close-button" onClick={() => setOpenDialog('none')}>
+          <span aria-hidden>Close</span>
+        </button>
+        <h3>Register</h3>
+        <LoginForm onSubmit={register} buttonText="Register" />
+      </Dialog>
+      <Logo />
+      <h1>Bookshelf</h1>
+      <div>
+        <button onClick={() => setOpenDialog('login')}>Login</button>
+      </div>
+      <div>
+        <button onClick={() => setOpenDialog('register')}>Register</button>
+      </div>
+    </>
+  )
+}
+
+const root = createRoot(document.getElementById('root'))
+root.render(<App />)
